@@ -28,11 +28,15 @@ cde resource upload --name my_file_resource --local-path aws/my_file.txt
 cde resource upload --name my_pipeline_resource --local-path aws/aws_dag_full.py
 ```
 
-Create CDE Airflow Job:
+Create & Run CDE Airflow Job:
 
 ```
 cde job create --name my_pipeline --type airflow --dag-file aws_dag_full.py --mount-1-resource my_pipeline_resource --airflow-file-mount-1-resource my_file_resource
+
+cde job run --name my_pipeline
 ```
+
+
 
 
 ### References
