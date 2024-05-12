@@ -46,55 +46,26 @@ from airflow.providers.amazon.aws.operators.s3 import S3ListOperator
 from airflow.operators.dummy_operator import DummyOperator
 import pendulum
 
-username = "pdefusco_051224"
-bucket_name = "airflow-custom-bucket"
-cde_job_name = "simple-pyspark"
-
-print("Running as Username: ", username)
-
-#DAG instantiation
-default_args = {
-        'owner': 'pauldefusco',
-        'retry_delay': timedelta(seconds=5),
-        'depends_on_past': False,
-        'start_date': datetime(2023,9,20,0),
-        'schedule_interval':'@hourly',
-        'end_date': datetime(2024,9,30,8)
-        }
-
-dag_name = '{}-aws-prvdrs'.format(username)
-
-custom_airflow_dag = DAG(
-    dag_name,
-    default_args=default_args,
+with DAG(
+    dag_id='s3_bucket_tagging_dag',
+    schedule_interval=None,
+    start_date=datetime(2021, 1, 1),
     catchup=False,
-    is_paused_upon_creation=False
-)
+    default_args={"bucket_name": BUCKET_NAME},
+    max_active_runs=1,
+    tags=['example'],
+) as dag:
 
-start = DummyOperator(
-    task_id="start",
-    dag=custom_airflow_dag
-)
+    create_bucket = S3CreateBucketOperator(task_id='s3_bucket_tagging_dag_create', region_name='us-east-1')
 
-step1  = S3ListOperator(
-    task_id="list_keys",
-    bucket=bucket_name,
-    dag=custom_airflow_dag,
-    aws_conn_id = 's3_default'
-)
+    delete_bucket = S3DeleteBucketOperator(task_id='s3_bucket_tagging_dag_delete', force_delete=True)
 
-#Using the CDEJobRunOperator
-step2 = CDEJobRunOperator(
-  task_id='etl',
-  dag=custom_airflow_dag,
-  job_name=cde_job_name #job_name needs to match the name assigned to the Spark CDE Job in the CDE UI
-)
+    get_tagging = S3GetBucketTaggingOperator(task_id='s3_bucket_tagging_dag_get_tagging')
 
-end = DummyOperator(
-    task_id="end",
-    dag=custom_airflow_dag
-)
-#Execute tasks in the below order
+    put_tagging = S3PutBucketTaggingOperator(
+        task_id='s3_bucket_tagging_dag_put_tagging', key=TAG_KEY, value=TAG_VALUE
+    )
 
-# step6c only executes when both step6a and step6b have completed
-start >> step1 >> step2 >> end
+    delete_tagging = S3DeleteBucketTaggingOperator(task_id='s3_bucket_tagging_dag_delete_tagging')
+
+    create_bucket >> put_tagging >> get_tagging >> delete_tagging >> delete_bucket

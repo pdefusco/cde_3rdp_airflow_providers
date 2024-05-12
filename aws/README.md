@@ -6,6 +6,35 @@
 pip install apache-airflow-providers-amazon
 ```
 
+### Instructions
+
+Create pipeline resource:
+
+```
+cde resource create --name my_pipeline_resource   
+```
+
+Create files resource:
+
+```
+cde resource create --name my_file_resource
+```
+
+Upload files to resources:
+
+```
+cde resource upload --name my_file_resource --local-path aws/my_file.txt
+
+cde resource upload --name my_pipeline_resource --local-path aws/aws_dag_full.py
+```
+
+Create CDE Airflow Job:
+
+```
+cde job create --name my_pipeline --type airflow --dag-file aws_dag_full.py --mount-1-resource my_pipeline_resource --airflow-file-mount-1-resource my_file_resource
+```
+
+
 ### References
 
 Official Documentation: https://airflow.apache.org/docs/apache-airflow-providers-amazon/6.0.0/index.html
