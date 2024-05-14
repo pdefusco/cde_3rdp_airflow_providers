@@ -1,0 +1,80 @@
+# Welcome to great expectations.
+# This project configuration file allows you to define datasources,
+# generators, integrations, and other configuration artifacts that
+# make it easier to use Great Expectations.
+
+# For more help configuring great expectations,
+# see the documentation at: https://greatexpectations.io/config_file.html
+
+# NOTE: GE uses the names of configured datasources and generators to manage
+# how expectations and other configuration artifacts are stored in the
+# expectations/ and datasources/ folders. If you need to rename an existing
+# datasource or generator, be sure to also update the paths for related artifacts.
+
+datasources:
+  my_datasource:
+    module_name: great_expectations.datasource
+    class_name: Datasource
+    execution_engine:
+      module_name: great_expectations.execution_engine
+      class_name: PandasExecutionEngine
+    data_connectors:
+      default_inferred_data_connector_name:
+        base_directory: ../data
+        module_name: great_expectations.datasource.data_connector
+        default_regex:
+          group_names:
+            - data_asset_name
+          pattern: (.*)
+        class_name: InferredAssetFilesystemDataConnector
+      default_runtime_data_connector_name:
+        module_name: great_expectations.datasource.data_connector
+        class_name: RuntimeDataConnector
+        batch_identifiers:
+          - default_identifier_name
+
+
+# The plugins_directory is where the data_context will look for custom_data_assets.py
+# and any configured evaluation parameter store
+
+#plugins_directory: plugins/
+
+# Configure additional data context options here.
+
+# Uncomment the lines below to enable s3 as a result store. If a result store is enabled,
+# validation results will be saved in the store according to run id.
+
+# For S3, ensure that appropriate credentials or assume_role permissions are set where
+# validation happens.
+
+
+#validations_store:
+#  local:
+#    type: filesystem
+#    base_directory: uncommitted/validations/
+#   remote:
+#     type: s3
+#     bucket: <your bucket>
+#     key_prefix: <your key prefix>
+#
+
+# Uncomment the lines below to enable a result callback.
+
+# result_callback:
+#   slack: https://slack.com/replace_with_your_webhook
+
+# Uncomment the lines below to save snapshots of data assets that fail validation.
+
+# data_asset_snapshot_store:
+#   filesystem:
+#     base_directory: uncommitted/snapshots/
+#   s3:
+#     bucket:
+#     key_prefix:
+
+# Uncomment the lines below to enable a custom evaluation_parameter_store
+# evaluation_parameter_store:
+#   type: my_evaluation_parameter_store
+#   config:  # - this is optional - this is how we can pass kwargs to the object's constructor
+#     param1: boo
+#     param2: bah
