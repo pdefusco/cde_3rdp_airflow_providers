@@ -70,7 +70,7 @@ start = DummyOperator(
 submit_flink_job = FlinkOperator(task_id='submit_flink_job',
                                 job_name='my_flink_job',
                                 main_class='com.example.flink.MyJob',
-                                jar='/app/mount/myflinkjob.jar',
+                                jar='/app/mount/my_file_resource/myflinkjob.jar',
                                 flink_configuration={'taskmanager.memory.process.size': '2g'})
 
 end = DummyOperator(
