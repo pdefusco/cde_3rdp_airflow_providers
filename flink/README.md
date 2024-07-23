@@ -3,7 +3,7 @@
 ### Installation
 
 ```
-pip install apache-airflow-providers-amazon
+pip install apache-airflow-providers-apache-flink
 ```
 
 ### Instructions
@@ -23,9 +23,9 @@ cde resource create --name my_file_resource
 Upload files to resources:
 
 ```
-cde resource upload --name my_file_resource --local-path aws/my_file.txt
+cde resource upload --name my_file_resource --local-path flink/my_file.txt
 
-cde resource upload --name my_pipeline_resource --local-path aws/aws_dag_full.py
+cde resource upload --name my_pipeline_resource --local-path flink/aws_dag_full.py
 ```
 
 Create & Run CDE Airflow Job:
