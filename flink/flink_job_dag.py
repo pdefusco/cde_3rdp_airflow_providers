@@ -71,7 +71,7 @@ submit_flink_job = FlinkOperator(task_id='submit_flink_job',
                                 dag=dag,
                                 job_name='my_flink_job',
                                 main_class='com.example.flink.MyJob',
-                                jar='/app/mount/my_file_resource/myflinkjob.jar',
+                                jar='/app/mount/my_file_resource/flink-quickstart-skeleton-1.0-SNAPSHOT.jar',
                                 flink_configuration={'taskmanager.memory.process.size': '2g'})
 
 end = DummyOperator(
